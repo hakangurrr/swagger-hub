@@ -1,0 +1,100 @@
+openapi: 3.0.3
+info:
+  title: 'FlightOffer API'
+  version: '1.0.0-draft'
+paths:
+  /flightOfferTeasers:
+    get:
+      description: 'get flight offers'
+      parameters:
+        - name: dateFrom
+          description: 'ISO 8601 - Timestamp (tbd date or datetime/zone)' 
+          in: query
+          schema:
+            example: '2022-01-14T08:30:00+0600'
+            format: date-time
+            type: string
+        - name: dateTo
+          description: 'ISO 8601 - Timestamp (tbd date or datetime/zone)'
+          in: query
+          schema:
+            example: '2022-01-14T08:30:00+0600'
+            format: date-time
+            type: string
+        - name: maxPrice
+          description: in smallest currency unit
+          in: query
+          schema:
+            example: '19900'
+            format: integer
+            type: number
+        - name: currencyCode
+          description: 'ISO 4217'
+          in: query
+          schema:
+            type: string
+            enum: [EUR, USD, CHF, GBP, ...]
+        - name: departureAirportCodes
+          description: 'IATA 3-letter codes - https://www.nationsonline.org/oneworld/airport_code.htm'
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: arrivalAirportCodes
+          description: 'IATA 3-letter codes - https://www.nationsonline.org/oneworld/airport_code.htm'
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: fare
+          description: for ECOBest-controlling
+          in: query
+          schema:
+            type: string
+        - name: compartment
+          example: Y
+          in: query
+          schema:
+            type: string
+        
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FlightOfferTeaser'
+          description: 'OK'
+        '401':
+          description: 'Unauthorized'
+        '403':
+          description: 'Forbidden'
+      tags:
+        - FlightOfferTeaser
+components:
+  schemas:
+    FlightOfferTeaser:
+      properties:
+        departureAirportCode:
+          type: string
+          description: 'IATA 3-letter codes - https://www.nationsonline.org/oneworld/airport_code.htm'
+        arrivalAirportCode:
+          type: string
+          description: 'IATA 3-letter codes - https://www.nationsonline.org/oneworld/airport_code.htm'  
+        departureDate:
+          description: 'ISO 8601 - Date (tbd date or datetime/zone)'
+          example: '2022-01-14'
+          format: date
+          type: string
+        price:
+          description: in smallest currency unit
+          type: integer
+        priceWas:
+          description: in smallest currency unit
+          type: integer
+      type: object
+servers:
+  - url: 'https://skyflybroker.condor.com/flightOffer'
